@@ -63,6 +63,10 @@ sudo ./setup.sh
 
 If a default `jcnr-license.txt` file and `jcnr-root-password.txt` file are present in the directory, they will be used to automatically generate the `jcnr-secrets.yaml` file. If these default files are not found, you will be prompted to provide the JCNR root password and license key. This will be used to build the secrets file and apply it to Kubernetes.
 
+## JCNR-in-Server Setup Terminal Recording
+
+[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.png)]( https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp)
+
 ## Setup Output Sections
 
 ### 1. Initial Setup & System Reboot
