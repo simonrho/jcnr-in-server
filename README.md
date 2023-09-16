@@ -2,6 +2,9 @@
 
 This guide assists in setting up a DPDK app running environment, specifically for the Juniper Cloud-Native Router (JCNR). This setup is designed for a standalone JCNR in a server, primarily intended for demonstration purposes. It's important to note that this setup is not intended for production deployment.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Overview
 
 The scripts provided will help establish a running environment that includes requirements like Huge Page, VFIO/VFIO-PCI drivers, and necessary kernel modules for cRPD.
