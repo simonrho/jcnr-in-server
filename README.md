@@ -66,7 +66,23 @@ If a default `jcnr-license.txt` file and `jcnr-root-password.txt` file are prese
 
 This section provides feedback on the setup related to DPDK environment preparation, including netplan configuration, Linux extra modules installation, cRPD related modules configuration, and more. At the end of this step, a system reboot is recommended.
 ```bash
-# ./setup.sh 
+# git clone https://github.com/simonrho/jcnr-in-server.git
+Cloning into 'jcnr-in-server'...
+remote: Enumerating objects: 13, done.
+remote: Counting objects: 100% (13/13), done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 13 (delta 0), reused 13 (delta 0), pack-reused 0
+Receiving objects: 100% (13/13), 13.27 KiB | 6.64 MiB/s, done.
+# 
+# cd jcnr-in-server/ubuntu
+#
+# sudo echo "<jcnr-root-password>" > jcnr-root-password.txt
+# sudo echo "<jcnr-license-key>" > jcnr-license.txt
+#
+# ls Juniper_Cloud_Native_Router*.tgz
+Juniper_Cloud_Native_Router_23.2.tgz
+#
+# sudo ./setup.sh 
 
 Running install-dpdk-env.sh.
 Logging install steps to install-dpdk-env.log.
@@ -150,11 +166,11 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-# kubectl get nodes
+# sudo kubectl get nodes
 NAME   STATUS   ROLES           AGE   VERSION
 k1     Ready    control-plane   27m   v1.27.4
 # 
-# kubectl get pods -A
+# sudo kubectl get pods -A
 NAMESPACE         NAME                                     READY   STATUS    RESTARTS   AGE
 contrail-deploy   contrail-k8s-deployer-6b84fc9987-jmgzv   1/1     Running   0          25m
 contrail          contrail-vrouter-masters-zmqzk           3/3     Running   0          25m
