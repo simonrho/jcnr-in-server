@@ -65,7 +65,7 @@ If a default `jcnr-license.txt` file and `jcnr-root-password.txt` file are prese
 
 ## JCNR-in-Server Setup Terminal Recording
 
-[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.png)]( https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp)
+[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.svg)]( https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp?autoplay=1)
 
 ## Setup Output Sections
 
