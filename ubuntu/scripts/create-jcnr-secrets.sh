@@ -22,16 +22,28 @@ log_and_run() {
     fi
 }
 
+# Default values
+JCNR_LICENSE_KEY=""
+JCNR_ROOT_PASSWORD=""
+
+# Source the settings file if it exists
+if [ -f "settings" ]; then
+    source settings
+fi
+
+
 ROOT_PW_FILE="jcnr-root-password.txt"
 LICENSE_FILE="jcnr-license.txt"
 
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}"
 
 # Notify the user about the default files
-echo -e "This script will use ${GREEN}default files${NC} for license & root password if present:"
-echo -e "Default License File: ${GREEN}${LICENSE_FILE}${NC}"
-echo -e "Default Root Password File: ${GREEN}${ROOT_PW_FILE}${NC}"
-echo -e "If these files are not found, you will be prompted for input."
+echo -e "This script will attempt to obtain the license key and root password in the following order:"
+echo -e "1. From variables in the ${GREEN}settings.sh${NC} file: ${GREEN}JCNR_LICENSE_KEY${NC} and ${GREEN}JCNR_ROOT_PASSWORD${NC}."
+echo -e "2. From the default files if present:"
+echo -e "   License File: ${GREEN}${LICENSE_FILE}${NC}"
+echo -e "   Root Password File: ${GREEN}${ROOT_PW_FILE}${NC}"
+echo -e "3. If neither of the above sources are found, you will be prompted for input."
 echo -e "---------------------------------------"
 
 # Function to silently get contents from file or write user input to an output file
@@ -106,9 +118,21 @@ EOF
 }
 
 
-# Store root password and license key in temporary files
-get_input_or_prompt_to_file "Enter root password" "${ROOT_PW_FILE}" "tmp-root-password.txt" "root password"
-get_multiline_input_or_prompt_to_file "Enter license key" "${LICENSE_FILE}" "tmp-license.txt" "license key"
+# Check if the JCNR_ROOT_PASSWORD and JCNR_LICENSE_KEY are set.
+# If not, use the default files (if they exist) or prompt the user.
+if [[ -z $JCNR_ROOT_PASSWORD ]]; then
+    get_input_or_prompt_to_file "Enter root password" "${ROOT_PW_FILE}" "tmp-root-password.txt" "root password"
+else
+    echo -e "Reading root password from ${GREEN}settings file${NC}."
+    echo "$JCNR_ROOT_PASSWORD" > "tmp-root-password.txt"
+fi
+
+if [[ -z $JCNR_LICENSE_KEY ]]; then
+    get_multiline_input_or_prompt_to_file "Enter license key" "${LICENSE_FILE}" "tmp-license.txt" "license key"
+else
+    echo -e "Reading license key from ${GREEN}settings file${NC}."
+    echo "$JCNR_LICENSE_KEY" > "tmp-license.txt"
+fi
 
 # Build jcnr-secrets.yaml file
 echo -e "Creating ${GREEN}jcnr-secrets.yaml${NC} file."

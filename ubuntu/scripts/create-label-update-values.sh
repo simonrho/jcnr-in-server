@@ -24,6 +24,11 @@ log_and_run() {
 
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}."
 
+# Source the settings file if it exists
+if [ -f "settings" ]; then
+    source settings
+fi
+
 # Find the values.yaml file
 VALUES_FILE=$(find . -type f -name 'values.yaml' -path './Juniper_Cloud_Native_Router_*/helmchart/values.yaml' | sort -V | tail -1)
 
@@ -47,12 +52,17 @@ is_physical_interface() {
     fi
 }
 
-ETH_INTERFACES=()
-for intf in $(ls /sys/class/net/); do
-    if is_physical_interface "$intf" && [ "$intf" != "$DEFAULT_ETH" ]; then
-        ETH_INTERFACES+=("$intf")
-    fi
-done
+
+if [[ -z "$JCNR_FABRIC_INTERFACES" ]]; then
+    ETH_INTERFACES=()
+    for intf in $(ls /sys/class/net/); do
+        if is_physical_interface "$intf" && [ "$intf" != "$DEFAULT_ETH" ]; then
+            ETH_INTERFACES+=("$intf")
+        fi
+    done
+else
+    IFS=' ' read -ra ETH_INTERFACES <<< "$JCNR_FABRIC_INTERFACES"
+fi
 
 if [ ${#ETH_INTERFACES[@]} -eq 0 ]; then
     echo -e "${RED}No ethernet interfaces found. Please check your system.${NC}"
@@ -62,14 +72,17 @@ fi
 # Update restoreInterfaces value using perl
 perl -i -pe 'BEGIN{undef $/;} s/(jcnr-vrouter:[\s\S]*?restoreInterfaces: )false/\1true/' "$VALUES_FILE"
 
-# Use awk to append configurations under the global attribute
-# Read user input or set default
-read -t 30 -p "Enter label in format key=value (You have 30 seconds to respond. Default is key1=jcnr): " LABEL_INPUT
-LABEL_INPUT=${LABEL_INPUT:-key1=jcnr}
+# Check JCNR_LABEL
+if [[ -z "$JCNR_LABEL" ]]; then
+    # Read user input or set default
+    read -t 30 -p "Enter label in format key=value (You have 30 seconds to respond. Default is key1=jcnr): " LABEL_INPUT
+    JCNR_LABEL=${LABEL_INPUT:-key1=jcnr}
+fi
 
 # Extract key and value
-KEY="${LABEL_INPUT%=*}"
-VALUE="${LABEL_INPUT#*=}"
+KEY="${JCNR_LABEL%=*}"
+VALUE="${JCNR_LABEL#*=}"
+
 
 # Add label to worker nodes
 NODE_NAME=$(kubectl get nodes -o json | jq -r .items[0].metadata.name)
@@ -147,12 +160,14 @@ BEGIN {
 # Summary of changes
 echo -e "Updates made to ${GREEN}$VALUES_FILE${NC}:"
 echo -e " 1. Added ${GREEN}nodeAffinity${NC} with key-value pair: ${GREEN}$KEY=$VALUE${NC}."
-echo -e " 2. Added ${GREEN}fabricInterface${NC}: ${GREEN}${ETH_INTERFACES[@]}${NC}."
+echo -e " 2. Added ${GREEN}fabricInterface${NC}: ${YELLOW}${ETH_INTERFACES[@]}${NC}."
 echo -e " 3. Changed ${GREEN}restoreInterfaces${NC} to ${GREEN}true${NC}."
 
 # Note about cpu_core_mask
 echo ""
-echo -e "NOTE: Make sure to set the ${GREEN}'cpu_core_mask'${NC} value in the ${GREEN}values.yaml${NC} file as required for your setup."
-echo -e "Also, ensure that the added ${GREEN}fabricInterface${NC}(s) are the ones you intend to use."
+echo -e "Note: Ensure you customize the ${GREEN}'cpu_core_mask'${NC} in the ${GREEN}'values.yaml'${NC} file to fit your setup."
+echo -e "And double-check that the added ${GREEN}'fabricInterface'${NC}(s) are your intended ones."
 echo -e "A backup of the original file has been saved to ${GREEN}${VALUES_FILE}.bak${NC}."
 echo ""
+
+

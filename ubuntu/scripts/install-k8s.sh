@@ -22,14 +22,22 @@ log_and_run() {
     fi
 }
 
+
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}."
 echo -e "Logging install steps to ${YELLOW}$LOG_FILE${NC}."
+
+# Default values
+K8S_VERSION="latest"
+
+# Source the settings file if it exists
+if [ -f "settings" ]; then
+    source settings
+fi
 
 log_and_run sudo apt-get update -y
 log_and_run sudo apt-get install -y jq unzip
 
-
-echo -e "Installing ${GREEN}Docker...${NC}"
+echo -e "Installing ${GREEN}Docker${NC}..."
 log_and_run sudo apt-get install -y apt-transport-https curl software-properties-common
 log_and_run "sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg"
 
@@ -39,7 +47,7 @@ log_and_run sudo apt-get install -y docker-ce
 log_and_run sudo usermod -aG docker ${USER}
 
 
-echo -e "Installing ${GREEN}cri-dockerd...${NC}"
+echo -e "Installing ${GREEN}cri-dockerd${NC}..."
 UBUNTU_CODENAME=$(lsb_release -cs)
 if [ -z "$UBUNTU_CODENAME" ]; then
     echo "Failed to detect the Ubuntu codename!"
@@ -57,12 +65,12 @@ log_and_run sudo dpkg -i "$FILENAME"
 log_and_run sudo rm "$FILENAME"
 
 
-echo -e "Installing ${GREEN}crictl...${NC}"
+echo -e "Installing ${GREEN}crictl${NC}..."
 LATEST_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/cri-tools/releases/latest | jq -r ".tag_name")
 URL="https://github.com/kubernetes-sigs/cri-tools/releases/download/${LATEST_VERSION}/crictl-${LATEST_VERSION}-linux-amd64.tar.gz"
 log_and_run "sudo curl -sL $URL | sudo tar zx -C /usr/local/bin"
 
-echo -e "Installing ${GREEN}CNI plugins...${NC}"
+echo -e "Installing ${GREEN}CNI plugins${NC}..."
 log_and_run sudo mkdir -p /etc/cni/net.d
 log_and_run sudo mkdir -p /opt/cni/bin
 LATEST_VERSION=$(curl --silent "https://api.github.com/repos/containernetworking/plugins/releases/latest" | jq -r .tag_name)
@@ -70,17 +78,17 @@ log_and_run sudo wget -q https://github.com/containernetworking/plugins/releases
 log_and_run sudo tar -xf cni-plugins-linux-amd64-${LATEST_VERSION}.tgz -C /opt/cni/bin/
 log_and_run sudo rm cni-plugins-linux-amd64-${LATEST_VERSION}.tgz 
 
-echo -e "Installing ${GREEN}minikube...${NC}"
+echo -e "Installing ${GREEN}minikube${NC}... k8s version: ${GREEN}${K8S_VERSION}${NC}"
 log_and_run apt-get install conntrack -y
 log_and_run curl -sLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 log_and_run chmod +x minikube
 log_and_run sudo mv minikube /usr/local/bin/
-log_and_run sudo minikube start --driver=none --cni=bridge
+log_and_run "sudo minikube start --driver=none --cni=bridge --kubernetes-version=${K8S_VERSION}"
 
 echo -e "Create ${GREEN}/usr/local/bin/kubectl${NC} soft-link..."
 log_and_run sudo ln -f -s ~/.minikube/cache/linux/amd64/v*/kubectl /usr/local/bin/kubectl
 
-echo -e "Installing ${GREEN}multus cni...${NC}"
+echo -e "Installing ${GREEN}multus cni${NC}..."
 log_and_run sudo kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml
 
 echo -e "${GREEN}Installation completed. Check $LOG_FILE for detailed logs.${NC}"

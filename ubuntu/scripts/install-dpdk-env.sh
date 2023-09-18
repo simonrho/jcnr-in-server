@@ -22,16 +22,24 @@ log_and_run() {
     fi
 }
 
-FLAG_FILE="/var/tmp/rebooted_once"
+FLAG_FILE="/var/tmp/install-dpdk-env-once"
 
 # Check if script has been run post-reboot
-if [ -f "$FLAG_FILE" ]; then
+if [[ -f "$FLAG_FILE" ]] && grep -q "default_hugepagesz=1G" /proc/cmdline; then
     echo -e "${RED}This script has previously been executed and the system rebooted.${NC}"    
     exit 0
 fi
 
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}."
 echo -e "Logging install steps to ${YELLOW}$LOG_FILE${NC}."
+
+# Default values
+ONEG_HUGEPAGES=16
+
+# Source the settings file if it exists
+if [ -f "settings" ]; then
+    source settings
+fi
 
 # Check the distribution from /etc/os-release
 DISTRO=$(grep ^ID= /etc/os-release | cut -d'=' -f2 | tr -d '"')
@@ -127,7 +135,7 @@ echo -e "${GREEN}THP${NC} disabled."
 
 # check if 1G huge page is available
 log_and_run 'grep -q pdpe1gb /proc/cpuinfo || (echo "Error: CPU lacks 1G huge pages support." && exit 1)'
-log_and_run 'echo 16 | sudo tee /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages > /dev/null'
+log_and_run "echo $ONEG_HUGEPAGES | sudo tee /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages > /dev/null"
 log_and_run 'echo 0 | sudo tee /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages > /dev/null'
 # unmount 2M huge page if needed
 if sudo mountpoint -q /mnt/huge; then
@@ -148,7 +156,7 @@ update_grub() {
     GRUB_DIR="/etc/default/grub.d"
 
     # String to check for in the config files
-    SEARCH_STRING="default_hugepagesz=1G hugepagesz=1G hugepages=16 intel_iommu=on iommu=pt"
+    SEARCH_STRING="default_hugepagesz=1G hugepagesz=1G hugepages=${ONEG_HUGEPAGES} intel_iommu=on iommu=pt"
 
     # Find all files in grub.d containing GRUB_CMDLINE_LINUX_DEFAULT and pick the last one (by alphanumeric order)
     OVERRIDE_FILE=$(grep -l "GRUB_CMDLINE_LINUX_DEFAULT" $GRUB_DIR/* | sort | tail -n 1)
@@ -160,6 +168,8 @@ update_grub() {
 
     # Now check if the chosen file contains our desired string, and if not, modify it
     if ! grep -q "$SEARCH_STRING" "$OVERRIDE_FILE"; then
+        echo -e "1G HugePages count: ${GREEN}$ONEG_HUGEPAGES${NC}"
+        echo -e "grub file updated: ${GREEN}${OVERRIDE_FILE}${NC}"
         cmd="sudo sed -i -r 's/^(GRUB_CMDLINE_LINUX_DEFAULT=)\"(.*)\"/\\1\"\\2 $SEARCH_STRING\"/' $OVERRIDE_FILE"
         log_and_run "$cmd"
 
@@ -183,6 +193,7 @@ if [[ "$CONFIRM" == [yY] || "$CONFIRM" == [yY][eE][sS] ]]; then
     log_and_run sudo reboot
     exit 100
 else
+    log_and_run sudo touch "$FLAG_FILE"
     log_and_run echo "Reboot cancelled."
     exit 1
 fi

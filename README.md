@@ -1,24 +1,34 @@
 # JCNR-In-Server Setup Guide
 
-This guide assists in setting up a DPDK app running environment, specifically for the Juniper Cloud-Native Router (JCNR). This setup is designed for a standalone JCNR in a server, primarily intended for demonstration purposes. It's important to note that this setup is not intended for production deployment.
+This guide assists in setting up the DPDK app running environment for the Juniper Cloud-Native Router (JCNR). This setup focuses on a standalone JCNR in a server, perfect for demonstrations. It's crucial to understand that this setup is not for production use.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Overview
 
-The scripts provided will help establish a running environment that includes requirements like Huge Page, VFIO/VFIO-PCI drivers, and necessary kernel modules for cRPD.
+Our provided scripts ensure a smooth establishment of the required environment, including the Huge Page, VFIO/VFIO-PCI drivers, and essential kernel modules for cRPD.
 
-Once set up, a reboot will be required to apply changes made to grub and the hugepage size settings. Additionally, the script installs an All-in-One Kubernetes cluster using minikube. The Kubernetes node will receive a label either from user input or a default value to identify it as the target node for JCNR. Various tools, including helm, kubectl, k9s, and others will be automatically installed.
+After configuring everything, a system reboot is necessary to reflect the changes, especially in grub and hugepage size settings. The script will also install an All-in-One Kubernetes cluster via minikube. The Kubernetes node gets a label either from user input or a default, identifying it as the target for JCNR. This process will automatically install various tools like helm, kubectl, k9s, and more.
 
 ## Prerequisites
 
 - Ubuntu server 22.04
-- Basic knowledge of Kubernetes
-- Basic knowledge of Ubuntu Linux
-- JCNR package file downloaded
+- Downloaded JCNR package file
 
-**Note:** The installation scripts and steps provided are tested and specifically designed for Ubuntu server 22.04.
+**Note:** Our installation scripts and steps are tailored for Ubuntu server 22.04.
+
+## Configuration File (settings.sh)
+Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings.sh` file. Below are the available settings:
+
+```bash
+ONEG_HUGEPAGES=16              # Number of 1GB-sized hugepages
+K8S_VERSION="latest"           # Kubernetes version, e.g., "v1.27.4" or "latest"
+JCNR_LICENSE_KEY=""            # Raw license key
+JCNR_ROOT_PASSWORD="jcnr123"   # Plain text root password
+JCNR_LABEL="key1=jcnr"         # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES=""      # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+```
 
 ## Installation
 
@@ -26,7 +36,7 @@ Once set up, a reboot will be required to apply changes made to grub and the hug
 ```bash
 git clone https://github.com/simonrho/jcnr-in-server.git
 ```
-2. Navigate to the repository directory and run the setup script with root privileges:
+2. Move to the repository directory and execute the setup script with root permissions:
 ```bash
 cd jcnr-in-server
 sudo ./setup.sh
@@ -36,9 +46,8 @@ sudo ./setup.sh
 
 ```
 . 
-├── LICENSE.txt 
-├── README.md 
 ├── setup.sh 
+├── settings 
 └── ubuntu 
     └── scripts 
         ├── create-jcnr-secrets.sh 
@@ -51,27 +60,41 @@ sudo ./setup.sh
 
 ## File Descriptions
 
-{setup.sh}: Initiates the installation of the DPDK app environment, Kubernetes, and JCNR.  
-{install-dpdk-env.sh}: Establishes the DPDK app running environment.  
-{install-k8s.sh}: Handles the installation of an all-in-one Kubernetes cluster.  
-{install-tools.sh}: Automates the installation of required tools such as kubectl, helm, and k9s.  
-{create-jcnr-secrets.sh}: Constructs the Kubernetes secrets manifest for JCNR license and root password.  
-{create-label-update-values.sh}: Tags the node with key/value, designating it as the JCNR running target.  
-{load-jcnr-images.sh}: Loads the JCNR container images into the local repository.  
+`setup.sh`: Kicks off the installation of the DPDK app environment, Kubernetes, and JCNR.
+`install-dpdk-env.sh`: Sets up the DPDK app environment.
+`install-k8s.sh`: Manages the All-in-One Kubernetes cluster installation.
+`install-tools.sh`: Streamlines the installation of necessary tools like kubectl, helm, and k9s.
+`create-jcnr-secrets.sh`: Creates the Kubernetes secrets manifest for JCNR licensing and the root password.
+`create-label-update-values.sh`: Attaches a key/value label, marking it as the designated JCNR runner.
+`load-jcnr-images.sh`: Inputs the JCNR container images into the local repository.  
 
-## License and Password for JCNR
+## Licensing and JCNR Password
 
-If a default `jcnr-license.txt` file and `jcnr-root-password.txt` file are present in the directory, they will be used to automatically generate the `jcnr-secrets.yaml` file. If these default files are not found, you will be prompted to provide the JCNR root password and license key. This will be used to build the secrets file and apply it to Kubernetes.
+The script seeks the JCNR license key and root password in this sequence:
 
-## JCNR-in-Server Setup Terminal Recording
 
-[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.svg)]( https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp?autoplay=1)
+1. From the provided variables in the `settings.sh` file: `JCNR_LICENSE_KEY` and `JCNR_ROOT_PASSWORD`.
+2. If the default `jcnr-license.txt` and `jcnr-root-password.txt` files are present in the directory.
+3. If neither of the above sources are available, you will be prompted to manually input the JCNR root password and license key.
+
+
+1. Through the settings.sh file variables: `JCNR_LICENSE_KEY` and `JCNR_ROOT_PASSWORD`.
+2. Via default files `jcnr-license.txt` and `jcnr-root-password.txt` if found in the directory.
+3. If neither are available, manual input of JCNR root password and license key is prompted.
+
+The gathered details help in generating the `jcnr-secrets.yaml` file, subsequently applied to Kubernetes.
+
+
+## JCNR-in-Server Setup Terminal Playback
+
+[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.svg)](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp?autoplay=1)
 
 ## Setup Output Sections
 
-### 1. Initial Setup & System Reboot
+### 1. Preliminary Setup & System Restart
 
-This section provides feedback on the setup related to DPDK environment preparation, including netplan configuration, Linux extra modules installation, cRPD related modules configuration, and more. At the end of this step, a system reboot is recommended.
+This section furnishes feedback on the setup concerning the DPDK environment preparation. This includes netplan configurations, Linux extra modules installation, cRPD module configurations, among others. After this stage, a system restart is advisable.
+
 ```bash
 # git clone https://github.com/simonrho/jcnr-in-server.git
 Cloning into 'jcnr-in-server'...
@@ -89,7 +112,8 @@ Receiving objects: 100% (13/13), 13.27 KiB | 6.64 MiB/s, done.
 # ls Juniper_Cloud_Native_Router*.tgz
 Juniper_Cloud_Native_Router_23.2.tgz
 #
-# sudo ./setup.sh 
+sudo ./setup.sh 
+./scripts/install-dpdk-env.sh: line 28: [: missing `]'
 
 Running install-dpdk-env.sh.
 Logging install steps to install-dpdk-env.log.
@@ -108,11 +132,12 @@ Connection to ec2-54-186-82-174.us-west-2.compute.amazonaws.com closed by remote
 Connection closed.
 
 ```
-### 2. Kubernetes Installation & JCNR Installation
+### 2. Kubernetes & JCNR Installations
 
-After rebooting, running the setup script again will proceed with Kubernetes cluster setup, including Docker, cri-dockerd, CNI plugins, and minikube installation. This is then followed by JCNR installation, which involves loading the JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user input or default settings.
+Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
+
 ```bash
-./setup.sh 
+sudo ./setup.sh 
 This script has previously been executed and the system rebooted.
 
 Running install-k8s.sh.
@@ -121,7 +146,7 @@ Installing Docker...
 Installing cri-dockerd...
 Installing crictl...
 Installing CNI plugins...
-Installing minikube...
+Installing minikube... k8s version: latest
 Create /usr/local/bin/kubectl soft-link...
 Installing multus cni...
 Installation completed. Check install-k8s.log for detailed logs.
@@ -135,18 +160,20 @@ All required tools are installed.
 
 Running load-jcnr-images.sh.
 Found tar file: Juniper_Cloud_Native_Router_23.2.tgz.
-Extracting the file: Juniper_Cloud_Native_Router_23.2.tgz...
+Extracting the file: Juniper_Cloud_Native_Router_23.2.tgz.
 Found Docker image file: ./Juniper_Cloud_Native_Router_23.2/images/jcnr-images.tar.gz.
 Loading Docker image..../Juniper_Cloud_Native_Router_23.2/images/jcnr-images.tar.gz.
 Docker image loaded successfully!
 
 Running create-jcnr-secrets.sh
-This script will use default files for license & root password if present:
-Default License File: jcnr-license.txt
-Default Root Password File: jcnr-root-password.txt
-If these files are not found, you will be prompted for input.
+This script will attempt to obtain the license key and root password in the following order:
+1. From variables in the settings.sh file: JCNR_LICENSE_KEY and JCNR_ROOT_PASSWORD.
+2. From the default files if present:
+   License File: jcnr-license.txt
+   Root Password File: jcnr-root-password.txt
+3. If neither of the above sources are found, you will be prompted for input.
 ---------------------------------------
-Reading root password from jcnr-root-password.txt.
+Reading root password from settings file.
 Reading license key from jcnr-license.txt.
 Creating jcnr-secrets.yaml file.
 Applying JCNR secrets and namespace.
@@ -154,15 +181,15 @@ namespace/jcnr created
 secret/jcnr-secrets created
 
 Running create-label-update-values.sh.
-Enter label in format key=value (You have 30 seconds to respond. Default is key1=jcnr): Adding label key1=jcnr to the node k1.
-node/k1 labeled
+Adding label key1=jcnr to the node k2.
+node/k2 labeled
 Updates made to ./Juniper_Cloud_Native_Router_23.2/helmchart/values.yaml:
  1. Added nodeAffinity with key-value pair: key1=jcnr.
  2. Added fabricInterface: ens6.
  3. Changed restoreInterfaces to true.
 
-NOTE: Make sure to set the 'cpu_core_mask' value in the values.yaml file as required for your setup.
-Also, ensure that the added fabricInterface(s) are the ones you intend to use.
+Note: Ensure you customize the 'cpu_core_mask' in the 'values.yaml' file to fit your setup.
+And double-check that the added 'fabricInterface'(s) are your intended ones.
 A backup of the original file has been saved to ./Juniper_Cloud_Native_Router_23.2/helmchart/values.yaml.bak.
 
 Do you want to install JCNR with the auto-configured values.yaml file? (y/N): (You have 10 seconds to respond. Default is N): Y

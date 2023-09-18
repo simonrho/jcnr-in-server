@@ -23,12 +23,10 @@ log_and_run() {
 
 # Clear the log file
 cat /dev/null > $LOG_FILE
-
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}."
 
 # Get the tar file from the argument or search for the default in the current directory
 TAR_FILE="${1:-$(ls Juniper_Cloud_Native_Router*.tgz | sort -V | tail -1)}"
-
 
 # Check if the tar file exists
 if [[ ! -f "$TAR_FILE" ]]; then
@@ -41,7 +39,7 @@ echo -e "Found tar file: ${GREEN}${TAR_FILE}${NC}." | tee -a $LOG_FILE
 
 # Extract the tar file to a temporary directory
 JCNR_DIR="./"
-echo -e "Extracting the file: ${GREEN}${TAR_FILE}${NC}..." | tee -a $LOG_FILE
+echo -e "Extracting the file: ${GREEN}${TAR_FILE}${NC}." | tee -a $LOG_FILE
 log_and_run "tar zxvf \"$TAR_FILE\" --overwrite -C \"$JCNR_DIR\""
 
 # Find the Docker image file in the extracted contents
