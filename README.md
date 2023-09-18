@@ -46,16 +46,17 @@ sudo ./setup.sh
 
 ```
 . 
-├── setup.sh 
-├── settings 
-└── ubuntu 
-    └── scripts 
-        ├── create-jcnr-secrets.sh 
-        ├── create-label-update-values.sh 
-        ├── install-dpdk-env.sh 
-        ├── install-k8s.sh 
-        ├── install-tools.sh 
-        └── load-jcnr-images.sh 
+└── jcnr-in-server 
+    ├── ubuntu
+        ├── setup.sh 
+        ├── settings 
+        └── scripts 
+            ├── create-jcnr-secrets.sh 
+            ├── create-label-update-values.sh 
+            ├── install-dpdk-env.sh 
+            ├── install-k8s.sh 
+            ├── install-tools.sh 
+            └── load-jcnr-images.sh 
 ```
 
 ## File Descriptions
