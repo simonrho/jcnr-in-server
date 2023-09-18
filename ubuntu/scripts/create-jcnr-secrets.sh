@@ -39,7 +39,7 @@ echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}"
 
 # Notify the user about the default files
 echo -e "This script will attempt to obtain the license key and root password in the following order:"
-echo -e "1. From variables in the ${GREEN}settings.sh${NC} file: ${GREEN}JCNR_LICENSE_KEY${NC} and ${GREEN}JCNR_ROOT_PASSWORD${NC}."
+echo -e "1. From variables in the ${GREEN}settings${NC} file: ${GREEN}JCNR_LICENSE_KEY${NC} and ${GREEN}JCNR_ROOT_PASSWORD${NC}."
 echo -e "2. From the default files if present:"
 echo -e "   License File: ${GREEN}${LICENSE_FILE}${NC}"
 echo -e "   Root Password File: ${GREEN}${ROOT_PW_FILE}${NC}"

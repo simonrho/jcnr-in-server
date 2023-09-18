@@ -74,7 +74,7 @@ sudo ./setup.sh
 The script seeks the JCNR license key and root password in this sequence:
 
 
-1. From the provided variables in the `settings.sh` file: `JCNR_LICENSE_KEY` and `JCNR_ROOT_PASSWORD`.
+1. From the provided variables in the `settings` file: `JCNR_LICENSE_KEY` and `JCNR_ROOT_PASSWORD`.
 2. If the default `jcnr-license.txt` and `jcnr-root-password.txt` files are present in the directory.
 3. If neither of the above sources are available, you will be prompted to manually input the JCNR root password and license key.
 
@@ -181,7 +181,7 @@ Docker image loaded successfully!
 
 Running create-jcnr-secrets.sh
 This script will attempt to obtain the license key and root password in the following order:
-1. From variables in the settings.sh file: JCNR_LICENSE_KEY and JCNR_ROOT_PASSWORD.
+1. From variables in the settings file: JCNR_LICENSE_KEY and JCNR_ROOT_PASSWORD.
 2. From the default files if present:
    License File: jcnr-license.txt
    Root Password File: jcnr-root-password.txt
