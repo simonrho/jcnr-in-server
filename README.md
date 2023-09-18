@@ -22,12 +22,12 @@ After configuring everything, a system reboot is necessary to reflect the change
 Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings` file. Below are the available settings:
 
 ```bash
-ONEG_HUGEPAGES=16              # Number of 1GB-sized hugepages
-K8S_VERSION="latest"           # Kubernetes version, e.g., "v1.27.4" or "latest"
-JCNR_LICENSE_KEY=""            # Raw license key
-JCNR_ROOT_PASSWORD="jcnr123"   # Plain text root password
-JCNR_LABEL="key1=jcnr"         # Key-value pair in "key=value" format
-JCNR_FABRIC_INTERFACES=""      # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+ONEG_HUGEPAGES=16            # Number of 1GB-sized hugepages
+K8S_VERSION="latest"         # Kubernetes version, e.g., "v1.27.4" or "latest"
+JCNR_LICENSE_KEY=""          # Raw license key, e.g., "JUNOS892191212 aeaq...."
+JCNR_ROOT_PASSWORD="jcnr123" # Plain text root password, e.g., "jcnr123"
+JCNR_LABEL="key1=jcnr"       # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES=""    # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
 ```
 
 ## Installation
@@ -42,9 +42,20 @@ git clone https://github.com/simonrho/jcnr-in-server.git
 cp ./Juniper_Cloud_Native_Router_23.2.tgz ./jcnr-in-server/ubuntu/
 ```
 
-3. Move to the repository directory and execute the setup script with root permissions:
+3. Update the settings file:
 ```bash
 cd jcnr-in-server/ubuntu
+cat ./settings
+ONEG_HUGEPAGES=16            # Number of 1GB-sized hugepages
+K8S_VERSION="latest"         # Kubernetes version, e.g., "v1.27.4" or "latest"
+JCNR_LICENSE_KEY=""          # Raw license key, e.g., "JUNOS892191212 aeaq...."
+JCNR_ROOT_PASSWORD="jcnr123" # Plain text root password, e.g., "jcnr123"
+JCNR_LABEL="key1=jcnr"       # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES=""    # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+```
+
+4. Move to the repository directory and execute the setup script with root permissions:
+```bash
 sudo ./setup.sh
 ```
 
