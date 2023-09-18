@@ -80,6 +80,8 @@ The script seeks the JCNR license key and root password in this sequence:
 
 The gathered details help in generating the `jcnr-secrets.yaml` file, subsequently applied to Kubernetes.
 
+## Loading JCNR container images
+Please ensure that the JCNR package .tgz, downloaded from the Juniper Networks support site (containing JCNR container images and helm charts), is copied into the directory where the setup.sh script resides.
 
 ## JCNR-in-Server Setup Terminal Playback
 
