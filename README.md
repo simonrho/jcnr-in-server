@@ -106,7 +106,6 @@ Receiving objects: 100% (13/13), 13.27 KiB | 6.64 MiB/s, done.
 # 
 # cd jcnr-in-server/ubuntu
 #
-# sudo echo "<jcnr-root-password>" > jcnr-root-password.txt
 # sudo echo "<jcnr-license-key>" > jcnr-license.txt
 #
 # ls Juniper_Cloud_Native_Router*.tgz
