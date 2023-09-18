@@ -87,7 +87,7 @@ The gathered details help in generating the `jcnr-secrets.yaml` file, subsequent
 
 ## JCNR-in-Server Setup Terminal Playback
 
-[![asciicast](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp.svg)](https://asciinema.org/a/F3MEPuWz9ZowZ905hImNH8BJp?autoplay=1)
+[![asciicast](https://asciinema.org/a/xTH7eU7Uj8AbguYPHvzDPN2R6.svg)](https://asciinema.org/a/xTH7eU7Uj8AbguYPHvzDPN2R6?autoplay=1)
 
 ## Setup Output Sections
 
