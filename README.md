@@ -77,11 +77,6 @@ The script seeks the JCNR license key and root password in this sequence:
 2. If the default `jcnr-license.txt` and `jcnr-root-password.txt` files are present in the directory.
 3. If neither of the above sources are available, you will be prompted to manually input the JCNR root password and license key.
 
-
-1. Through the settings.sh file variables: `JCNR_LICENSE_KEY` and `JCNR_ROOT_PASSWORD`.
-2. Via default files `jcnr-license.txt` and `jcnr-root-password.txt` if found in the directory.
-3. If neither are available, manual input of JCNR root password and license key is prompted.
-
 The gathered details help in generating the `jcnr-secrets.yaml` file, subsequently applied to Kubernetes.
 
 
