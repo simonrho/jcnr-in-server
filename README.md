@@ -36,7 +36,13 @@ JCNR_FABRIC_INTERFACES=""      # Space-separated list of names, e.g., "ens5 ens6
 ```bash
 git clone https://github.com/simonrho/jcnr-in-server.git
 ```
-2. Move to the repository directory and execute the setup script with root permissions:
+
+2. Copy the JCNR package file in the setup directory:
+```bash
+cp ./Juniper_Cloud_Native_Router_23.2.tgz ./jcnr-in-server/ubuntu/
+```
+
+3. Move to the repository directory and execute the setup script with root permissions:
 ```bash
 cd jcnr-in-server/ubuntu
 sudo ./setup.sh
