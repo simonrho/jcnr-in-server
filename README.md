@@ -126,11 +126,11 @@ $ tree
 
 3 directories, 12 files
 $ cd jcnr-in-server/ubuntu/
-/jcnr-in-server/ubuntu$ 
-/jcnr-in-server/ubuntu$ cp ~/Juniper_Cloud_Native_Router_23.2.tgz .
-/jcnr-in-server/ubuntu$ cp ~/jcnr-license.txt .
-/jcnr-in-server/ubuntu$ 
-sudo ./setup.sh 
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ cp ~/Juniper_Cloud_Native_Router_23.2.tgz .
+~/jcnr-in-server/ubuntu$ cp ~/jcnr-license.txt .
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
 
 Running install-dpdk-env.sh.
 Logging install steps to install-dpdk-env.log.
@@ -154,7 +154,9 @@ Reboot now? (y/N): (You have 10 seconds to respond. Default is Y): Y
 Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
 
 ```bash
-$ sudo ./setup.sh 
+$ 
+$ cd jcnr-in-server/ubuntu
+~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
 This script has previously been executed and the system rebooted.
 
 Running install-k8s.sh.
@@ -217,11 +219,11 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-$ sudo kubectl get nodes
+~/jcnr-in-server/ubuntu$ sudo kubectl get nodes
 NAME   STATUS   ROLES           AGE   VERSION
 k1     Ready    control-plane   27m   v1.27.4
-$ 
-$ sudo kubectl get pods -A
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
 NAMESPACE         NAME                                     READY   STATUS    RESTARTS   AGE
 contrail-deploy   contrail-k8s-deployer-6b84fc9987-jmgzv   1/1     Running   0          25m
 contrail          contrail-vrouter-masters-zmqzk           3/3     Running   0          25m
@@ -235,5 +237,5 @@ kube-system       kube-multus-ds-t4rqz                     1/1     Running   0  
 kube-system       kube-proxy-qnt5b                         1/1     Running   0          27m
 kube-system       kube-scheduler-k1                        1/1     Running   0          27m
 kube-system       storage-provisioner                      1/1     Running   0          27m
-$ 
+~/jcnr-in-server/ubuntu$ 
 ```
