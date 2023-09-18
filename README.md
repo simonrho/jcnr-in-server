@@ -18,8 +18,8 @@ After configuring everything, a system reboot is necessary to reflect the change
 
 **Note:** Our installation scripts and steps are tailored for Ubuntu server 22.04.
 
-## Configuration File (settings.sh)
-Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings.sh` file. Below are the available settings:
+## Configuration File (settings)
+Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings` file. Below are the available settings:
 
 ```bash
 ONEG_HUGEPAGES=16              # Number of 1GB-sized hugepages
