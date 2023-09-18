@@ -60,13 +60,13 @@ sudo ./setup.sh
 
 ## File Descriptions
 
-`setup.sh`: Kicks off the installation of the DPDK app environment, Kubernetes, and JCNR.
-`install-dpdk-env.sh`: Sets up the DPDK app environment.
-`install-k8s.sh`: Manages the All-in-One Kubernetes cluster installation.
-`install-tools.sh`: Streamlines the installation of necessary tools like kubectl, helm, and k9s.
-`create-jcnr-secrets.sh`: Creates the Kubernetes secrets manifest for JCNR licensing and the root password.
-`create-label-update-values.sh`: Attaches a key/value label, marking it as the designated JCNR runner.
-`load-jcnr-images.sh`: Inputs the JCNR container images into the local repository.  
+- `setup.sh`: Kicks off the installation of the DPDK app environment, Kubernetes, and JCNR.
+- `install-dpdk-env.sh`: Sets up the DPDK app environment.
+- `install-k8s.sh`: Manages the All-in-One Kubernetes cluster installation.
+- `install-tools.sh`: Streamlines the installation of necessary tools like kubectl, helm, and k9s.
+- `create-jcnr-secrets.sh`: Creates the Kubernetes secrets manifest for JCNR licensing and the root password.
+- `create-label-update-values.sh`: Attaches a key/value label, marking it as the designated JCNR runner.
+- `load-jcnr-images.sh`: Inputs the JCNR container images into the local repository.  
 
 ## Licensing and JCNR Password
 
