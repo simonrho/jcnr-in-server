@@ -96,23 +96,41 @@ The gathered details help in generating the `jcnr-secrets.yaml` file, subsequent
 This section furnishes feedback on the setup concerning the DPDK environment preparation. This includes netplan configurations, Linux extra modules installation, cRPD module configurations, among others. After this stage, a system restart is advisable.
 
 ```bash
-# git clone https://github.com/simonrho/jcnr-in-server.git
+$ git clone https://github.com/simonrho/jcnr-in-server.git
 Cloning into 'jcnr-in-server'...
-remote: Enumerating objects: 13, done.
-remote: Counting objects: 100% (13/13), done.
-remote: Compressing objects: 100% (13/13), done.
-remote: Total 13 (delta 0), reused 13 (delta 0), pack-reused 0
-Receiving objects: 100% (13/13), 13.27 KiB | 6.64 MiB/s, done.
-# 
-# cd jcnr-in-server/ubuntu
-#
-# sudo echo "<jcnr-license-key>" > jcnr-license.txt
-#
-# ls Juniper_Cloud_Native_Router*.tgz
-Juniper_Cloud_Native_Router_23.2.tgz
-#
+remote: Enumerating objects: 49, done.
+remote: Counting objects: 100% (49/49), done.
+remote: Compressing objects: 100% (28/28), done.
+remote: Total 49 (delta 17), reused 49 (delta 17), pack-reused 0
+Receiving objects: 100% (49/49), 20.03 KiB | 2.86 MiB/s, done.
+Resolving deltas: 100% (17/17), done.
+$ ls
+Juniper_Cloud_Native_Router_23.2.tgz  jcnr-in-server  jcnr-license.txt
+$ tree
+.
+├── Juniper_Cloud_Native_Router_23.2.tgz
+├── jcnr-in-server
+│   ├── LICENSE.txt
+│   ├── README.md
+│   └── ubuntu
+│       ├── scripts
+│       │   ├── create-jcnr-secrets.sh
+│       │   ├── create-label-update-values.sh
+│       │   ├── install-dpdk-env.sh
+│       │   ├── install-k8s.sh
+│       │   ├── install-tools.sh
+│       │   └── load-jcnr-images.sh
+│       ├── settings
+│       └── setup.sh
+└── jcnr-license.txt
+
+3 directories, 12 files
+$ cd jcnr-in-server/ubuntu/
+/jcnr-in-server/ubuntu$ 
+/jcnr-in-server/ubuntu$ cp ~/Juniper_Cloud_Native_Router_23.2.tgz .
+/jcnr-in-server/ubuntu$ cp ~/jcnr-license.txt .
+/jcnr-in-server/ubuntu$ 
 sudo ./setup.sh 
-./scripts/install-dpdk-env.sh: line 28: [: missing `]'
 
 Running install-dpdk-env.sh.
 Logging install steps to install-dpdk-env.log.
@@ -124,11 +142,11 @@ VFIO modules configuration done.
 VFIO extra option setup done.
 THP disabled.
 Huge Pages setup complete.
+1G HugePages count: 16
+grub file updated: /etc/default/grub.d/50-cloudimg-settings.cfg
 GRUB updated.
 Installation completed. Check install-dpdk-env.log for detailed logs.
 Reboot now? (y/N): (You have 10 seconds to respond. Default is Y): Y
-Connection to ec2-54-186-82-174.us-west-2.compute.amazonaws.com closed by remote host.
-Connection closed.
 
 ```
 ### 2. Kubernetes & JCNR Installations
@@ -136,7 +154,7 @@ Connection closed.
 Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
 
 ```bash
-sudo ./setup.sh 
+$ sudo ./setup.sh 
 This script has previously been executed and the system rebooted.
 
 Running install-k8s.sh.
@@ -199,11 +217,11 @@ NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-# sudo kubectl get nodes
+$ sudo kubectl get nodes
 NAME   STATUS   ROLES           AGE   VERSION
 k1     Ready    control-plane   27m   v1.27.4
-# 
-# sudo kubectl get pods -A
+$ 
+$ sudo kubectl get pods -A
 NAMESPACE         NAME                                     READY   STATUS    RESTARTS   AGE
 contrail-deploy   contrail-k8s-deployer-6b84fc9987-jmgzv   1/1     Running   0          25m
 contrail          contrail-vrouter-masters-zmqzk           3/3     Running   0          25m
@@ -217,5 +235,5 @@ kube-system       kube-multus-ds-t4rqz                     1/1     Running   0  
 kube-system       kube-proxy-qnt5b                         1/1     Running   0          27m
 kube-system       kube-scheduler-k1                        1/1     Running   0          27m
 kube-system       storage-provisioner                      1/1     Running   0          27m
-# 
+$ 
 ```
