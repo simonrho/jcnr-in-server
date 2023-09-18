@@ -38,7 +38,7 @@ git clone https://github.com/simonrho/jcnr-in-server.git
 ```
 2. Move to the repository directory and execute the setup script with root permissions:
 ```bash
-cd jcnr-in-server
+cd jcnr-in-server/ubuntu
 sudo ./setup.sh
 ```
 
@@ -150,7 +150,6 @@ Reboot now? (y/N): (You have 10 seconds to respond. Default is Y): Y
 Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
 
 ```bash
-$ 
 $ cd jcnr-in-server/ubuntu
 ~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
 This script has previously been executed and the system rebooted.
