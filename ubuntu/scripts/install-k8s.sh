@@ -78,7 +78,7 @@ log_and_run sudo wget -q https://github.com/containernetworking/plugins/releases
 log_and_run sudo tar -xf cni-plugins-linux-amd64-${LATEST_VERSION}.tgz -C /opt/cni/bin/
 log_and_run sudo rm cni-plugins-linux-amd64-${LATEST_VERSION}.tgz 
 
-echo -e "Installing ${GREEN}minikube${NC}... k8s version: ${GREEN}${K8S_VERSION}${NC}"
+echo -e "Installing ${GREEN}minikube${NC}..."
 log_and_run apt-get install conntrack -y
 log_and_run sudo modprobe bridge
 log_and_run sudo modprobe br_netfilter
@@ -89,6 +89,8 @@ log_and_run curl -sLo minikube https://storage.googleapis.com/minikube/releases/
 log_and_run chmod +x minikube
 log_and_run sudo mv minikube /usr/local/bin/
 log_and_run "sudo minikube start --driver=none --cni=${K8S_CNI} --kubernetes-version=${K8S_VERSION}"
+INSTALLED_K8S_VERSION=$(sudo kubectl version -o json | jq -r '.serverVersion.gitVersion')
+echo -e "Installed k8s version: ${GREEN}${INSTALLED_K8S_VERSION}${NC}"
 
 echo -e "Create ${GREEN}/usr/local/bin/kubectl${NC} soft-link..."
 log_and_run sudo ln -f -s ~/.minikube/cache/linux/amd64/v*/kubectl /usr/local/bin/kubectl

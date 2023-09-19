@@ -69,8 +69,8 @@ if [ ${#ETH_INTERFACES[@]} -eq 0 ]; then
     exit 1
 fi
 
-# Update restoreInterfaces value using perl
-perl -i -pe 'BEGIN{undef $/;} s/(jcnr-vrouter:[\s\S]*?restoreInterfaces: )false/\1true/' "$VALUES_FILE"
+# # Update restoreInterfaces value using perl
+# perl -i -pe 'BEGIN{undef $/;} s/(jcnr-vrouter:[\s\S]*?restoreInterfaces: )false/\1true/' "$VALUES_FILE"
 
 # Check JCNR_LABEL
 if [[ -z "$JCNR_LABEL" ]]; then
@@ -157,17 +157,26 @@ BEGIN {
 }
 ' "$VALUES_FILE" > "${VALUES_FILE}.tmp" && mv "${VALUES_FILE}.tmp" "$VALUES_FILE"
 
+
+# Update YAML file based on shell variable values - mtu, cpu_core_mask, vrouter_dpdk_uio_driver, restoreInterfaces
+sed -i "s/^\(\s*mtu:\s*\).*$/\1\"$JCNR_MTU\"/" $VALUES_FILE
+sed -i "s/^\(\s*restoreInterfaces:\s*\).*$/\1$JCNR_RESTORE_INTERFACES/" $VALUES_FILE
+sed -i "s/^\(\s*cpu_core_mask:\s*\).*$/\1\"$JCNR_CPU_CORE_MASK\"/" $VALUES_FILE
+sed -i "s/^\(\s*vrouter_dpdk_uio_driver:\s*\).*$/\1\"$JCNR_VROUTER_DPDK_UIO_DRIVER\"/" $VALUES_FILE
+
 # Summary of changes
 echo -e "Updates made to ${GREEN}$VALUES_FILE${NC}:"
 echo -e " 1. Added ${GREEN}nodeAffinity${NC} with key-value pair: ${GREEN}$KEY=$VALUE${NC}."
 echo -e " 2. Added ${GREEN}fabricInterface${NC}: ${YELLOW}${ETH_INTERFACES[@]}${NC}."
-echo -e " 3. Changed ${GREEN}restoreInterfaces${NC} to ${GREEN}true${NC}."
+echo -e " 3. Updated ${GREEN}mtu${NC} to ${GREEN}${JCNR_MTU}${NC}."
+echo -e " 4. Updated ${GREEN}restoreInterfaces${NC} to ${GREEN}$JCNR_RESTORE_INTERFACES${NC}."
+echo -e " 5. Updated ${GREEN}cpu_core_mask${NC} to ${GREEN}$JCNR_CPU_CORE_MASK${NC}."
+echo -e " 6. Updated ${GREEN}vrouter_dpdk_uio_driver${NC} to ${GREEN}$JCNR_VROUTER_DPDK_UIO_DRIVER${NC}."
 
-# Note about cpu_core_mask
+# Note
 echo ""
-echo -e "Note: Ensure you customize the ${GREEN}'cpu_core_mask'${NC} in the ${GREEN}'values.yaml'${NC} file to fit your setup."
-echo -e "And double-check that the added ${GREEN}'fabricInterface'${NC}(s) are your intended ones."
-echo -e "A backup of the original file has been saved to ${GREEN}${VALUES_FILE}.bak${NC}."
+echo -e "Note: Please double-check that the ${GREEN}'fabricInterface'${NC} entries and other configurations in the ${GREEN}'values.yaml'${NC} file match your intentions."
+echo -e "A backup of the original file is saved as ${GREEN}${VALUES_FILE}.bak${NC}."
 echo ""
 
 

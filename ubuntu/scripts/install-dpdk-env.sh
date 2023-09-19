@@ -75,9 +75,13 @@ done
 echo -e "${GREEN}Netplan${NC} configuration done."
 
 # Install linux/kernel extra modules
-echo -e "${RED}Installing Linux extra modules. It might take a few minutes. Please be patient.${NC}"
-log_and_run sudo apt-get install -qy linux-modules-extra-$(uname -r)
-echo -e "${GREEN}Linux extra modules${NC} installed."
+if dpkg-query -W -f='${Status}' linux-modules-extra-$(uname -r) 2>/dev/null | grep -q "install ok installed"; then
+    echo -e "${GREEN}Linux extra modules${NC} are already installed."
+else
+    echo -e "${RED}Installing Linux extra modules. It might take a few minutes. Please be patient.${NC}"
+    log_and_run "sudo apt-get install -qy linux-modules-extra-$(uname -r)"
+    echo -e "${GREEN}Linux extra modules${NC} installed."
+fi
 
 # Setup kernel modules for the crpd
 log_and_run 'cat <<EOL | sudo tee /etc/modules-load.d/crpd.conf > /dev/null

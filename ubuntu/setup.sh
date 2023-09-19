@@ -19,6 +19,11 @@ run_script() {
     fi
 }
 
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as${NC} ${YELLOW}root${NC}.\n"
+   exit 1
+fi
+
 run_script $SCRIPTS_DIR/install-dpdk-env.sh
 run_script $SCRIPTS_DIR/install-k8s.sh
 run_script $SCRIPTS_DIR/install-tools.sh
@@ -32,7 +37,12 @@ CONFIRM=${CONFIRM:-N}
 if [[ "$CONFIRM" == [nN] ]]; then
     echo -e "${GREEN}Navigate to JCNR helm chart directory and edit the values.yaml file.${NC}"
 else
-    echo -e "${GREEN}Navigate to JCNR helm chart directory and helm install jcnr.${NC}"
-    cd Juniper_Cloud_Native_Router*/helmchart
-    helm install jcnr .
+    if helm ls -A | grep -q jcnr; then
+        echo -e "${GREEN}jcnr${NC} ${RED}Helm chart has been previously installed.${NC}"
+        echo -e "Not installing ${GREEN}jcnr${NC} again..."
+    else
+        echo -e "${GREEN}Navigate to JCNR helm chart directory and helm install jcnr.${NC}"
+        cd Juniper_Cloud_Native_Router*/helmchart
+        helm install jcnr .
+    fi
 fi
