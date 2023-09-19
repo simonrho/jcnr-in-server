@@ -18,12 +18,13 @@ After configuring everything, a system reboot is necessary to reflect the change
 
 **Note:** Our installation scripts and steps are tailored for Ubuntu server 22.04.
 
-## Configuration File (settings)
+## Configuration File
 Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings` file. Below are the available settings:
 
 ```bash
 ONEG_HUGEPAGES=16            # Number of 1GB-sized hugepages
 K8S_VERSION="latest"         # Kubernetes version, e.g., "v1.27.4" or "latest"
+K8S_CNI="bridge"             # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""          # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123" # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"       # Key-value pair in "key=value" format
