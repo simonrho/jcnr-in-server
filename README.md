@@ -48,6 +48,7 @@ cd jcnr-in-server/ubuntu
 cat ./settings
 ONEG_HUGEPAGES=16            # Number of 1GB-sized hugepages
 K8S_VERSION="latest"         # Kubernetes version, e.g., "v1.27.4" or "latest"
+K8S_CNI="bridge"             # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""          # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123" # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"       # Key-value pair in "key=value" format

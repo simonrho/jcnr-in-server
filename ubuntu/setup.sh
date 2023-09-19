@@ -26,7 +26,7 @@ run_script $SCRIPTS_DIR/load-jcnr-images.sh
 run_script $SCRIPTS_DIR/create-jcnr-secrets.sh
 run_script $SCRIPTS_DIR/create-label-update-values.sh
 
-read -t 10 -p "Do you want to install JCNR with the auto-configured values.yaml file? (y/N): (You have 10 seconds to respond. Default is N): " CONFIRM
+read -t 30 -p "Do you want to install JCNR with the auto-configured values.yaml file? (y/N): (You have 30 seconds to respond. Default is N): " CONFIRM
 CONFIRM=${CONFIRM:-N}
 
 if [[ "$CONFIRM" == [nN] ]]; then

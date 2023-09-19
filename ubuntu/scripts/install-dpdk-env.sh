@@ -75,7 +75,7 @@ done
 echo -e "${GREEN}Netplan${NC} configuration done."
 
 # Install linux/kernel extra modules
-echo -e "${RED}Installing Linux extra modules. It will take a few minutes. Please be patient.${NC}"
+echo -e "${RED}Installing Linux extra modules. It might take a few minutes. Please be patient.${NC}"
 log_and_run sudo apt-get install -qy linux-modules-extra-$(uname -r)
 echo -e "${GREEN}Linux extra modules${NC} installed."
 
@@ -127,7 +127,6 @@ log_and_run "sudo systemctl enable vfio-extra-setup"
 log_and_run "sudo systemctl start vfio-extra-setup"
 echo -e "${GREEN}VFIO ${NC}extra option setup done."
 
-
 # Disable transparent huge page
 log_and_run 'echo never | sudo tee /sys/kernel/mm/transparent_hugepage/enabled > /dev/null'
 log_and_run 'echo never | sudo tee /sys/kernel/mm/transparent_hugepage/defrag > /dev/null'
@@ -143,11 +142,24 @@ if sudo mountpoint -q /mnt/huge; then
     log_and_run 'sudo umount /mnt/huge'
 fi
 
+# Setup bridge and bridge netfilter setup
+log_and_run "sudo echo bridge | sudo tee -a /etc/modules"
+log_and_run "sudo echo br_netfilter | sudo tee -a /etc/modules"
+echo -e "${GREEN}bridge${NC} and ${GREEN}br_netfilter${NC} module setup complete."
+
 # Setup 1G huge page
 log_and_run sudo mkdir -p /mnt/huge1G
 log_and_run sudo mount -t hugetlbfs -o pagesize=1G none /mnt/huge1G
 log_and_run 'grep -q "/mnt/huge1G" /etc/fstab || (echo "hugetlbfs /mnt/huge1G hugetlbfs pagesize=1G 0 0" | sudo tee -a /etc/fstab > /dev/null)'
 echo -e "${GREEN}Huge Pages${NC} setup complete."
+
+# Disable swap
+if grep -q swap /etc/fstab; then
+    log_and_run sudo swapoff -a
+    log_and_run sudo cp /etc/fstab /etc/fstab.bak
+    log_and_run "sudo sed -i '/swap/s/^/#/' /etc/fstab"
+    echo -e "Swap lines in ${GREEN}/etc/fstab${NC} have been commented out."
+fi
 
 # Update Grub
 update_grub() {
@@ -183,7 +195,7 @@ echo -e "${GREEN}GRUB${NC} updated."
 echo -e "${GREEN}Installation completed. Check $LOG_FILE for detailed logs.${NC}"
 
 # Reboot prompt
-read -t 10 -p "Reboot now? (y/N): (You have 10 seconds to respond. Default is Y): " CONFIRM
+read -t 30 -p "Reboot now? (y/N): (You have 30 seconds to respond. Default is Y): " CONFIRM
 CONFIRM=${CONFIRM:-Y}
 
 if [[ "$CONFIRM" == [yY] || "$CONFIRM" == [yY][eE][sS] ]]; then

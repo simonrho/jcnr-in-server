@@ -55,7 +55,7 @@ fi
 echo -e "Found Docker image file: ${GREEN}${IMAGE_PATH}${NC}." | tee -a $LOG_FILE
 
 # Load the Docker image
-echo -e "Loading Docker image...${GREEN}${IMAGE_PATH}${NC}." | tee -a $LOG_FILE
+echo -e "Loading Docker image: ${GREEN}${IMAGE_PATH}${NC}." | tee -a $LOG_FILE
 log_and_run "docker load -i \"$IMAGE_PATH\""
 
 echo -e "${GREEN}Docker image loaded successfully!${NC}" | tee -a $LOG_FILE

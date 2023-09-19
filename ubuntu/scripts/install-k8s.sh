@@ -35,7 +35,7 @@ if [ -f "settings" ]; then
 fi
 
 log_and_run sudo apt-get update -y
-log_and_run sudo apt-get install -y jq unzip
+log_and_run sudo apt-get install -y jq unzip socat
 
 echo -e "Installing ${GREEN}Docker${NC}..."
 log_and_run sudo apt-get install -y apt-transport-https curl software-properties-common
@@ -80,10 +80,15 @@ log_and_run sudo rm cni-plugins-linux-amd64-${LATEST_VERSION}.tgz
 
 echo -e "Installing ${GREEN}minikube${NC}... k8s version: ${GREEN}${K8S_VERSION}${NC}"
 log_and_run apt-get install conntrack -y
+log_and_run sudo modprobe bridge
+log_and_run sudo modprobe br_netfilter
+if [[ -f /proc/sys/net/bridge/bridge-nf-call-iptables ]]; then
+    log_and_run "echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables"
+fi
 log_and_run curl -sLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 log_and_run chmod +x minikube
 log_and_run sudo mv minikube /usr/local/bin/
-log_and_run "sudo minikube start --driver=none --cni=bridge --kubernetes-version=${K8S_VERSION}"
+log_and_run "sudo minikube start --driver=none --cni=${K8S_CNI} --kubernetes-version=${K8S_VERSION}"
 
 echo -e "Create ${GREEN}/usr/local/bin/kubectl${NC} soft-link..."
 log_and_run sudo ln -f -s ~/.minikube/cache/linux/amd64/v*/kubectl /usr/local/bin/kubectl
