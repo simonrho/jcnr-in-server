@@ -112,7 +112,7 @@ Please ensure that the JCNR package .tgz, downloaded from the Juniper Networks s
 
 ## JCNR-in-Server Setup Terminal Playback
 
-[![asciicast](https://asciinema.org/a/xTH7eU7Uj8AbguYPHvzDPN2R6.svg)](https://asciinema.org/a/xTH7eU7Uj8AbguYPHvzDPN2R6?autoplay=1)
+[![asciicast](https://asciinema.org/a/vbY7fFvtYeaaM5y3lnm2dCiOx.svg)](https://asciinema.org/a/vbY7fFvtYeaaM5y3lnm2dCiOx?autoplay=1)
 
 ## Setup Output Sections
 
@@ -121,17 +121,21 @@ Please ensure that the JCNR package .tgz, downloaded from the Juniper Networks s
 This section furnishes feedback on the setup concerning the DPDK environment preparation. This includes netplan configurations, Linux extra modules installation, cRPD module configurations, among others. After this stage, a system restart is advisable.
 
 ```bash
-$ git clone https://github.com/simonrho/jcnr-in-server.git
+~$ ls
+Juniper_Cloud_Native_Router_23.2.tgz  jcnr-license.txt
+~$
+~$ git clone https://github.com/simonrho/jcnr-in-server.git
 Cloning into 'jcnr-in-server'...
-remote: Enumerating objects: 49, done.
-remote: Counting objects: 100% (49/49), done.
-remote: Compressing objects: 100% (28/28), done.
-remote: Total 49 (delta 17), reused 49 (delta 17), pack-reused 0
-Receiving objects: 100% (49/49), 20.03 KiB | 2.86 MiB/s, done.
-Resolving deltas: 100% (17/17), done.
-$ ls
-Juniper_Cloud_Native_Router_23.2.tgz  jcnr-in-server  jcnr-license.txt
-$ tree
+remote: Enumerating objects: 124, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 124 (delta 1), reused 7 (delta 1), pack-reused 117
+Receiving objects: 100% (124/124), 30.47 KiB | 3.81 MiB/s, done.
+Resolving deltas: 100% (62/62), done.
+~$
+~$
+~$
+~$ tree
 .
 ├── Juniper_Cloud_Native_Router_23.2.tgz
 ├── jcnr-in-server
@@ -150,36 +154,88 @@ $ tree
 └── jcnr-license.txt
 
 3 directories, 12 files
-$ cd jcnr-in-server/ubuntu/
-~/jcnr-in-server/ubuntu$ 
+~$
+~$
+~$ cd jcnr-in-server/ubuntu/
 ~/jcnr-in-server/ubuntu$ cp ~/Juniper_Cloud_Native_Router_23.2.tgz .
 ~/jcnr-in-server/ubuntu$ cp ~/jcnr-license.txt .
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$ cat settings
+ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
+K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
+JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
+JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES=""               # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+JCNR_MTU="9000"                         # MTU for all physical interfaces( all VF’s and  PF’s)
+JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
+JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
+JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$ vi settings
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$ cat settings
+ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
+K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
+JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
+JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES="ens6"               # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+JCNR_MTU="9000"                         # MTU for all physical interfaces( all VF’s and  PF’s)
+JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
+JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
+JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+~/jcnr-in-server/ubuntu$
+~/jcnr-in-server/ubuntu$ ./setup.sh
+This script must be run as root.
+
+~/jcnr-in-server/ubuntu$ sudo ./setup.sh
 
 Running install-dpdk-env.sh.
 Logging install steps to install-dpdk-env.log.
 Netplan configuration done.
-Installing Linux extra modules. It will take a few minutes. Please be patient.
+Installing Linux extra modules. It might take a few minutes. Please be patient.
 Linux extra modules installed.
 cRPD related modules configuration done.
 VFIO modules configuration done.
 VFIO extra option setup done.
 THP disabled.
+bridge and br_netfilter module setup complete.
 Huge Pages setup complete.
 1G HugePages count: 16
 grub file updated: /etc/default/grub.d/50-cloudimg-settings.cfg
 GRUB updated.
 Installation completed. Check install-dpdk-env.log for detailed logs.
-Reboot now? (y/N): (You have 10 seconds to respond. Default is Y): Y
-
+Reboot now? (y/N): (You have 30 seconds to respond. Default is Y): Y
 ```
 ### 2. Kubernetes & JCNR Installations
 
 Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
 
 ```bash
-$ cd jcnr-in-server/ubuntu
+$ cd jcnr-in-server/ubuntu/
+~/jcnr-in-server/ubuntu$ ls
+Juniper_Cloud_Native_Router_23.2.tgz  install-dpdk-env.log  jcnr-license.txt  scripts  settings  setup.sh
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ cat settings 
+ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
+K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
+JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
+JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
+JCNR_FABRIC_INTERFACES="ens6"               # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
+JCNR_MTU="9000"                         # MTU for all physical interfaces( all VF’s and  PF’s)
+JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
+JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
+JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ 
 ~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
 This script has previously been executed and the system rebooted.
 
@@ -189,7 +245,8 @@ Installing Docker...
 Installing cri-dockerd...
 Installing crictl...
 Installing CNI plugins...
-Installing minikube... k8s version: latest
+Installing minikube...
+Installed k8s version: v1.28.0-rc.1
 Create /usr/local/bin/kubectl soft-link...
 Installing multus cni...
 Installation completed. Check install-k8s.log for detailed logs.
@@ -205,7 +262,7 @@ Running load-jcnr-images.sh.
 Found tar file: Juniper_Cloud_Native_Router_23.2.tgz.
 Extracting the file: Juniper_Cloud_Native_Router_23.2.tgz.
 Found Docker image file: ./Juniper_Cloud_Native_Router_23.2/images/jcnr-images.tar.gz.
-Loading Docker image..../Juniper_Cloud_Native_Router_23.2/images/jcnr-images.tar.gz.
+Loading Docker image: ./Juniper_Cloud_Native_Router_23.2/images/jcnr-images.tar.gz.
 Docker image loaded successfully!
 
 Running create-jcnr-secrets.sh
@@ -224,42 +281,73 @@ namespace/jcnr created
 secret/jcnr-secrets created
 
 Running create-label-update-values.sh.
-Adding label key1=jcnr to the node k2.
-node/k2 labeled
+Adding label key1=jcnr to the node k1.
+node/k1 labeled
 Updates made to ./Juniper_Cloud_Native_Router_23.2/helmchart/values.yaml:
  1. Added nodeAffinity with key-value pair: key1=jcnr.
  2. Added fabricInterface: ens6.
- 3. Changed restoreInterfaces to true.
+ 3. Updated mtu to 9000.
+ 4. Updated restoreInterfaces to true.
+ 5. Updated cpu_core_mask to 2,3,22,23.
+ 6. Updated vrouter_dpdk_uio_driver to vfio-pci.
 
-Note: Ensure you customize the 'cpu_core_mask' in the 'values.yaml' file to fit your setup.
-And double-check that the added 'fabricInterface'(s) are your intended ones.
-A backup of the original file has been saved to ./Juniper_Cloud_Native_Router_23.2/helmchart/values.yaml.bak.
+Note: Please double-check that the 'fabricInterface' entries and other configurations in the 'values.yaml' file match your intentions.
+A backup of the original file is saved as ./Juniper_Cloud_Native_Router_23.2/helmchart/values.yaml.bak.
 
-Do you want to install JCNR with the auto-configured values.yaml file? (y/N): (You have 10 seconds to respond. Default is N): Y
+Do you want to install JCNR with the auto-configured values.yaml file? (y/N): (You have 30 seconds to respond. Default is N): Y
 Navigate to JCNR helm chart directory and helm install jcnr.
 NAME: jcnr
-LAST DEPLOYED: Sat Sep 16 00:06:39 2023
+LAST DEPLOYED: Tue Sep 19 20:01:21 2023
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
-~/jcnr-in-server/ubuntu$ sudo kubectl get nodes
-NAME   STATUS   ROLES           AGE   VERSION
-k1     Ready    control-plane   27m   v1.27.4
+~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
+NAMESPACE         NAME                                     READY   STATUS              RESTARTS   AGE
+contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   0/1     Init:0/1            0          13s
+contrail          apply-contrail-kmqkw                     1/1     Running             0          13s
+jcnr              kube-crpd-worker-sts-0                   0/1     PodInitializing     0          13s
+jcnr              syslog-ng-8ctg9                          0/1     ContainerCreating   0          13s
+kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running             0          98s
+kube-system       etcd-k1                                  1/1     Running             0          110s
+kube-system       kube-apiserver-k1                        1/1     Running             0          110s
+kube-system       kube-controller-manager-k1               1/1     Running             0          110s
+kube-system       kube-multus-ds-ctlnd                     1/1     Running             0          98s
+kube-system       kube-proxy-qs7fl                         1/1     Running             0          98s
+kube-system       kube-scheduler-k1                        1/1     Running             0          110s
+kube-system       storage-provisioner                      1/1     Running             0          110s
+~/jcnr-in-server/ubuntu$ 
 ~/jcnr-in-server/ubuntu$ 
 ~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
-NAMESPACE         NAME                                     READY   STATUS    RESTARTS   AGE
-contrail-deploy   contrail-k8s-deployer-6b84fc9987-jmgzv   1/1     Running   0          25m
-contrail          contrail-vrouter-masters-zmqzk           3/3     Running   0          25m
-jcnr              kube-crpd-worker-sts-0                   1/1     Running   0          25m
-jcnr              syslog-ng-rnw9s                          1/1     Running   0          25m
-kube-system       coredns-5d78c9869d-sc2ht                 1/1     Running   0          27m
-kube-system       etcd-k1                                  1/1     Running   0          27m
-kube-system       kube-apiserver-k1                        1/1     Running   0          27m
-kube-system       kube-controller-manager-k1               1/1     Running   0          27m
-kube-system       kube-multus-ds-t4rqz                     1/1     Running   0          27m
-kube-system       kube-proxy-qnt5b                         1/1     Running   0          27m
-kube-system       kube-scheduler-k1                        1/1     Running   0          27m
-kube-system       storage-provisioner                      1/1     Running   0          27m
+NAMESPACE         NAME                                     READY   STATUS              RESTARTS   AGE
+contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   1/1     Running             0          16s
+contrail          apply-contrail-kmqkw                     1/1     Running             0          16s
+jcnr              kube-crpd-worker-sts-0                   0/1     PodInitializing     0          16s
+jcnr              syslog-ng-8ctg9                          0/1     ContainerCreating   0          16s
+kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running             0          101s
+kube-system       etcd-k1                                  1/1     Running             0          113s
+kube-system       kube-apiserver-k1                        1/1     Running             0          113s
+kube-system       kube-controller-manager-k1               1/1     Running             0          113s
+kube-system       kube-multus-ds-ctlnd                     1/1     Running             0          101s
+kube-system       kube-proxy-qs7fl                         1/1     Running             0          101s
+kube-system       kube-scheduler-k1                        1/1     Running             0          113s
+kube-system       storage-provisioner                      1/1     Running             0          113s
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ 
+~/jcnr-in-server/ubuntu$ sudo k9s -A
+~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
+NAMESPACE         NAME                                     READY   STATUS    RESTARTS     AGE
+contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   1/1     Running   0            49s
+contrail          contrail-vrouter-masters-68qlf           3/3     Running   0            32s
+jcnr              kube-crpd-worker-sts-0                   1/1     Running   0            49s
+jcnr              syslog-ng-8ctg9                          1/1     Running   0            49s
+kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running   0            2m14s
+kube-system       etcd-k1                                  1/1     Running   0            2m26s
+kube-system       kube-apiserver-k1                        1/1     Running   0            2m26s
+kube-system       kube-controller-manager-k1               1/1     Running   0            2m26s
+kube-system       kube-multus-ds-ctlnd                     1/1     Running   0            2m14s
+kube-system       kube-proxy-qs7fl                         1/1     Running   0            2m14s
+kube-system       kube-scheduler-k1                        1/1     Running   0            2m26s
+kube-system       storage-provisioner                      1/1     Running   1 (9s ago)   2m26s
 ~/jcnr-in-server/ubuntu$ 
 ```
