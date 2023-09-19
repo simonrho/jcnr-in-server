@@ -89,7 +89,7 @@ log_and_run curl -sLo minikube https://storage.googleapis.com/minikube/releases/
 log_and_run chmod +x minikube
 log_and_run sudo mv minikube /usr/local/bin/
 log_and_run "sudo minikube start --driver=none --cni=${K8S_CNI} --kubernetes-version=${K8S_VERSION}"
-INSTALLED_K8S_VERSION=$(sudo kubectl version -o json | jq -r '.serverVersion.gitVersion')
+INSTALLED_K8S_VERSION=$(sudo minikube profile list -l -o json | jq -r '.valid[0].Config.KubernetesConfig.KubernetesVersion')
 echo -e "Installed k8s version: ${GREEN}${INSTALLED_K8S_VERSION}${NC}"
 
 echo -e "Create ${GREEN}/usr/local/bin/kubectl${NC} soft-link..."
