@@ -49,7 +49,22 @@ if [[ "$DISTRO" != "ubuntu" ]]; then
 fi
 
 # Discover the default interface (used for routing to the default gateway)
+
+# Initial wait time and the max time we're willing to wait
+WAIT_INTERVAL=10
+MAX_WAIT=30
+ELAPSED_TIME=0
+
+# Try to get the DEFAULT_IFACE
 DEFAULT_IFACE=$(ip route | grep default | awk '{print $5}')
+
+# Loop until DEFAULT_IFACE is found or we've waited for the maximum time
+while [[ -z "$DEFAULT_IFACE" && $ELAPSED_TIME -lt $MAX_WAIT ]]; do
+    sleep $WAIT_INTERVAL
+    ELAPSED_TIME=$((ELAPSED_TIME + WAIT_INTERVAL))
+    DEFAULT_IFACE=$(ip route | grep default | awk '{print $5}')
+done
+
 
 # Create a function to generate Netplan config for an interface
 generate_netplan_config() {
@@ -129,7 +144,7 @@ EOF'
 log_and_run "sudo systemctl daemon-reload"
 log_and_run "sudo systemctl enable vfio-extra-setup"
 log_and_run "sudo systemctl start vfio-extra-setup"
-echo -e "${GREEN}VFIO ${NC}extra option setup done."
+echo -e "${GREEN}VFIO extra${NC} option setup done."
 
 # Disable transparent huge page
 log_and_run 'echo never | sudo tee /sys/kernel/mm/transparent_hugepage/enabled > /dev/null'
@@ -151,6 +166,53 @@ log_and_run "sudo echo bridge | sudo tee -a /etc/modules"
 log_and_run "sudo echo br_netfilter | sudo tee -a /etc/modules"
 echo -e "${GREEN}bridge${NC} and ${GREEN}br_netfilter${NC} module setup complete."
 
+# Create setup_iptables.sh for the internet access from pods
+log_and_run 'sudo cat > /usr/local/bin/setup_iptables.sh << "EOF"
+#!/bin/bash
+
+while true; do
+    # Find the interface used for the default route
+    INTERFACE=$(ip route | grep default | awk "{print \$5}")
+
+    # Check and apply the FORWARD rule if not present
+    if ! iptables -C FORWARD -j ACCEPT &>/dev/null; then
+        iptables -P FORWARD ACCEPT
+    fi
+
+    # Check and apply the MASQUERADE rule if not present
+    if ! iptables -t nat -C POSTROUTING -o $INTERFACE -j MASQUERADE &>/dev/null; then
+        iptables -t nat -A POSTROUTING -o $INTERFACE -j MASQUERADE
+    fi
+
+    sleep 10
+done
+EOF'
+
+# Make the script executable
+log_and_run sudo chmod +x /usr/local/bin/setup_iptables.sh
+
+# Create the systemd service
+log_and_run 'sudo cat > /etc/systemd/system/setup_iptables.service << "EOF"
+[Unit]
+Description=Set up custom iptables rules
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/setup_iptables.sh
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+EOF'
+
+# Reload systemd, enable, and start the service
+log_and_run sudo systemctl daemon-reload
+log_and_run sudo systemctl enable setup_iptables.service
+log_and_run sudo systemctl start setup_iptables.service
+echo -e "${GREEN}iptables${NC} setup for internet access from the pods is complete."
+
+
 # Setup 1G huge page
 log_and_run sudo mkdir -p /mnt/huge1G
 log_and_run sudo mount -t hugetlbfs -o pagesize=1G none /mnt/huge1G
@@ -165,14 +227,68 @@ if grep -q swap /etc/fstab; then
     echo -e "Swap lines in ${GREEN}/etc/fstab${NC} have been commented out."
 fi
 
+
+# Setup isolcpus
+log_and_run sudo apt-get install -qy numactl
+
+get_isolated_cpu_range() {
+    local NUMA_NODES=$(numactl --hardware | grep "available:" | awk '{print $2}')
+    local TOTAL_CPUS=$(nproc)
+    local CPUS=""
+
+    if [ "$TOTAL_CPUS" -le 4 ]; then
+        CPUS=""
+    elif [ "$NUMA_NODES" -eq 1 ]; then
+        local MIDPOINT=$((TOTAL_CPUS / 2))
+        # Single NUMA: isolate 1st half CPUs if total CPUs > 4
+
+        # Read the CPU list into an array
+        read -ra cpus <<< $(numactl --hardware | grep "node 0 cpus:" | cut -d: -f2)
+
+        # Get the midpoint of the array
+        midpoint=$(( ${#cpus[@]} / 2 ))
+
+        # Print the first half of the array
+        CPUS=$(echo "${cpus[@]:0:$midpoint}" | tr ' ' ',')
+
+    else
+        # Multiple NUMA: isolate 1st node CPUs
+
+        # Read the CPU list into an array
+        read -ra cpus <<< $(numactl --hardware | grep "node 0 cpus:" | cut -d: -f2)
+
+        # Get the midpoint of the array
+        endpoint=${#cpus[@]}
+
+        # Print the first half of the array
+        CPUS=$(echo "${cpus[@]:0:$endpoint}" | tr ' ' ',')
+    fi
+
+    echo $CPUS
+}
+
+
 # Update Grub
 update_grub() {
     # The main config file and the directory containing other config files
     MAIN_GRUB="/etc/default/grub"
     GRUB_DIR="/etc/default/grub.d"
 
+    if [ "$ISOLATED_CPUS" == "auto" ]; then
+        CPU_RANGE=$(get_isolated_cpu_range)
+    elif [ -z "$ISOLATED_CPUS" ]; then
+        CPU_RANGE=""
+    else
+        CPU_RANGE="$ISOLATED_CPUS"
+    fi
+
+    SEARCH_STRING="default_hugepagesz=1G hugepagesz=1G hugepages=${ONEG_HUGEPAGES} intel_iommu=on iommu=pt"
+    [ -n "$CPU_RANGE" ] && SEARCH_STRING="${SEARCH_STRING} isolcpus=${CPU_RANGE}"
+    [ -n "$CPU_RANGE" ] && echo -e "The isolated CPU range is [${GREEN}$CPU_RANGE${NC}]"
+
     # String to check for in the config files
     SEARCH_STRING="default_hugepagesz=1G hugepagesz=1G hugepages=${ONEG_HUGEPAGES} intel_iommu=on iommu=pt"
+    [ -n "$CPU_RANGE" ] && SEARCH_STRING="${SEARCH_STRING} isolcpus=${CPU_RANGE}"
 
     # Find all files in grub.d containing GRUB_CMDLINE_LINUX_DEFAULT and pick the last one (by alphanumeric order)
     OVERRIDE_FILE=$(grep -l "GRUB_CMDLINE_LINUX_DEFAULT" $GRUB_DIR/* | sort | tail -n 1)

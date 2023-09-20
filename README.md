@@ -23,8 +23,13 @@ Before starting the installation, you can optionally configure some of the setup
 
 ```bash
 ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU range (e.g., "1-4,6").
+                                        # If the value is "": 'isolcpus' won't be added to GRUB_CMDLINE_LINUX_DEFAULT in grub.
+                                        # If the value is "auto": For a single NUMA, the 1st half of the CPUs will be isolated. 
+                                        # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
+                                        # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -52,8 +57,13 @@ cp ./Juniper_Cloud_Native_Router_23.2.tgz ./jcnr-in-server/ubuntu/
 cd jcnr-in-server/ubuntu
 cat ./settings
 ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU range (e.g., "1-4,6").
+                                        # If the value is "": 'isolcpus' won't be added to GRUB_CMDLINE_LINUX_DEFAULT in grub.
+                                        # If the value is "auto": For a single NUMA, the 1st half of the CPUs will be isolated. 
+                                        # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
+                                        # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -163,8 +173,13 @@ Resolving deltas: 100% (62/62), done.
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$ cat settings
 ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU range (e.g., "1-4,6").
+                                        # If the value is "": 'isolcpus' won't be added to GRUB_CMDLINE_LINUX_DEFAULT in grub.
+                                        # If the value is "auto": For a single NUMA, the 1st half of the CPUs will be isolated. 
+                                        # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
+                                        # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -179,8 +194,13 @@ JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. 
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$ cat settings
 ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
+ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU range (e.g., "1-4,6").
+                                        # If the value is "": 'isolcpus' won't be added to GRUB_CMDLINE_LINUX_DEFAULT in grub.
+                                        # If the value is "auto": For a single NUMA, the 1st half of the CPUs will be isolated. 
+                                        # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
+                                        # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -189,6 +209,7 @@ JCNR_MTU="9000"                         # MTU for all physical interfaces( all V
 JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
 JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
 JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$ ./setup.sh
 This script must be run as root.
@@ -205,13 +226,16 @@ VFIO modules configuration done.
 VFIO extra option setup done.
 THP disabled.
 bridge and br_netfilter module setup complete.
+iptables setup for internet access from the pods is complete.
 Huge Pages setup complete.
+Isoclated cpu range is 0,1,2,3,4,5,6,7
 1G HugePages count: 16
 grub file updated: /etc/default/grub.d/50-cloudimg-settings.cfg
 GRUB updated.
 Installation completed. Check install-dpdk-env.log for detailed logs.
 Reboot now? (y/N): (You have 30 seconds to respond. Default is Y): Y
 ```
+
 ### 2. Kubernetes & JCNR Installations
 
 Post-reboot, running the setup script progresses the Kubernetes cluster setup. This encompasses Docker, cri-dockerd, CNI plugins, and minikube installations. What follows is the JCNR installation, which entails loading JCNR images, creating Kubernetes secrets for JCNR, and updating the `values.yaml` file based on user choice or preset configurations.
@@ -220,20 +244,6 @@ Post-reboot, running the setup script progresses the Kubernetes cluster setup. T
 $ cd jcnr-in-server/ubuntu/
 ~/jcnr-in-server/ubuntu$ ls
 Juniper_Cloud_Native_Router_23.2.tgz  install-dpdk-env.log  jcnr-license.txt  scripts  settings  setup.sh
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ cat settings 
-ONEG_HUGEPAGES=16                       # Number of 1GB-sized hugepages
-K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="bridge"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
-JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
-JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
-JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
-JCNR_FABRIC_INTERFACES="ens6"               # Space-separated list of names, e.g., "ens5 ens6 ens7 ens8"
-JCNR_MTU="9000"                         # MTU for all physical interfaces( all VF’s and  PF’s)
-JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
-JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
-JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
 ~/jcnr-in-server/ubuntu$ 
 ~/jcnr-in-server/ubuntu$ 
 ~/jcnr-in-server/ubuntu$ sudo ./setup.sh 
@@ -303,51 +313,20 @@ STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 ~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
-NAMESPACE         NAME                                     READY   STATUS              RESTARTS   AGE
-contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   0/1     Init:0/1            0          13s
-contrail          apply-contrail-kmqkw                     1/1     Running             0          13s
-jcnr              kube-crpd-worker-sts-0                   0/1     PodInitializing     0          13s
-jcnr              syslog-ng-8ctg9                          0/1     ContainerCreating   0          13s
-kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running             0          98s
-kube-system       etcd-k1                                  1/1     Running             0          110s
-kube-system       kube-apiserver-k1                        1/1     Running             0          110s
-kube-system       kube-controller-manager-k1               1/1     Running             0          110s
-kube-system       kube-multus-ds-ctlnd                     1/1     Running             0          98s
-kube-system       kube-proxy-qs7fl                         1/1     Running             0          98s
-kube-system       kube-scheduler-k1                        1/1     Running             0          110s
-kube-system       storage-provisioner                      1/1     Running             0          110s
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
-NAMESPACE         NAME                                     READY   STATUS              RESTARTS   AGE
-contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   1/1     Running             0          16s
-contrail          apply-contrail-kmqkw                     1/1     Running             0          16s
-jcnr              kube-crpd-worker-sts-0                   0/1     PodInitializing     0          16s
-jcnr              syslog-ng-8ctg9                          0/1     ContainerCreating   0          16s
-kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running             0          101s
-kube-system       etcd-k1                                  1/1     Running             0          113s
-kube-system       kube-apiserver-k1                        1/1     Running             0          113s
-kube-system       kube-controller-manager-k1               1/1     Running             0          113s
-kube-system       kube-multus-ds-ctlnd                     1/1     Running             0          101s
-kube-system       kube-proxy-qs7fl                         1/1     Running             0          101s
-kube-system       kube-scheduler-k1                        1/1     Running             0          113s
-kube-system       storage-provisioner                      1/1     Running             0          113s
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ 
-~/jcnr-in-server/ubuntu$ sudo k9s -A
-~/jcnr-in-server/ubuntu$ sudo kubectl get pods -A
-NAMESPACE         NAME                                     READY   STATUS    RESTARTS     AGE
-contrail-deploy   contrail-k8s-deployer-84b699fcdc-tbkhd   1/1     Running   0            49s
-contrail          contrail-vrouter-masters-68qlf           3/3     Running   0            32s
-jcnr              kube-crpd-worker-sts-0                   1/1     Running   0            49s
-jcnr              syslog-ng-8ctg9                          1/1     Running   0            49s
-kube-system       coredns-5dd5756b68-4v7sn                 1/1     Running   0            2m14s
-kube-system       etcd-k1                                  1/1     Running   0            2m26s
-kube-system       kube-apiserver-k1                        1/1     Running   0            2m26s
-kube-system       kube-controller-manager-k1               1/1     Running   0            2m26s
-kube-system       kube-multus-ds-ctlnd                     1/1     Running   0            2m14s
-kube-system       kube-proxy-qs7fl                         1/1     Running   0            2m14s
-kube-system       kube-scheduler-k1                        1/1     Running   0            2m26s
-kube-system       storage-provisioner                      1/1     Running   1 (9s ago)   2m26s
+NAMESPACE         NAME                                       READY   STATUS    RESTARTS      AGE
+contrail-deploy   contrail-k8s-deployer-84b699fcdc-z6l7m     1/1     Running   0             5m36s
+contrail          contrail-vrouter-masters-wll5x             3/3     Running   0             5m28s
+jcnr              kube-crpd-worker-sts-0                     1/1     Running   0             5m36s
+jcnr              syslog-ng-jthgk                            1/1     Running   0             5m36s
+kube-system       calico-kube-controllers-7ddc4f45bc-6btwp   1/1     Running   0             25m
+kube-system       calico-node-6wkvr                          1/1     Running   0             25m
+kube-system       coredns-5dd5756b68-n4bmk                   1/1     Running   0             25m
+kube-system       etcd-k1                                    1/1     Running   0             26m
+kube-system       kube-apiserver-k1                          1/1     Running   0             26m
+kube-system       kube-controller-manager-k1                 1/1     Running   0             26m
+kube-system       kube-multus-ds-68ft4                       1/1     Running   2 (24m ago)   25m
+kube-system       kube-proxy-kj9rh                           1/1     Running   0             25m
+kube-system       kube-scheduler-k1                          1/1     Running   0             26m
+kube-system       storage-provisioner                        1/1     Running   0             26m
 ~/jcnr-in-server/ubuntu$ 
 ```
