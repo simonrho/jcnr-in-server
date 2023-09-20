@@ -29,7 +29,7 @@ ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU rang
                                         # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
                                         # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="calico"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -63,7 +63,7 @@ ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU rang
                                         # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
                                         # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="calico"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -179,7 +179,7 @@ ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU rang
                                         # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
                                         # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="calico"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
@@ -200,7 +200,7 @@ ISOLATED_CPUS="auto"                    # Can be "", "auto", or a valid CPU rang
                                         # For multiple NUMA configurations, all CPUs of the 1st node will be isolated.
                                         # If the total CPU count is 4 or fewer, no CPUs will be isolated.
 K8S_VERSION="latest"                    # Kubernetes version, e.g., "v1.27.4" or "latest"
-K8S_CNI="flannel"                       # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
+K8S_CNI="calico"                        # Kubernetes CNI, e.g., "bridge" "flannel", "calico"
 JCNR_LICENSE_KEY=""                     # Raw license key, e.g., "JUNOS892191212 aeaq...."
 JCNR_ROOT_PASSWORD="jcnr123"            # Plain text root password, e.g., "jcnr123"
 JCNR_LABEL="key1=jcnr"                  # Key-value pair in "key=value" format
