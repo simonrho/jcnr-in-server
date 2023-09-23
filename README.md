@@ -233,6 +233,7 @@ Isoclated cpu range is 0,1,2,3,4,5,6,7
 grub file updated: /etc/default/grub.d/50-cloudimg-settings.cfg
 GRUB updated.
 Installation completed. Check install-dpdk-env.log for detailed logs.
+Please ensure the IOMMU is enabled in the BIOS/UEFI.
 Reboot now? (y/N): (You have 30 seconds to respond. Default is Y): Y
 ```
 
