@@ -313,6 +313,7 @@ update_grub() {
 update_grub
 echo -e "${GREEN}GRUB${NC} updated."
 echo -e "${GREEN}Installation completed. Check $LOG_FILE for detailed logs.${NC}"
+echo -e "Please ensure the ${GREEN}IOMMU${NC} is enabled in the ${YELLOW}BIOS/UEFI${NC}."
 
 # Reboot prompt
 read -t 30 -p "Reboot now? (y/N): (You have 30 seconds to respond. Default is Y): " CONFIRM
