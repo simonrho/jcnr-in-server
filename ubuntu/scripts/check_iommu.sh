@@ -8,6 +8,8 @@ fi
 
 lshw -c network -businfo -quiet
 
+echo -e '======================================================='
+
 PORT="$1"
 
 # Get PCI address using ethtool
@@ -29,6 +31,6 @@ IOMMU_GROUP=$(echo $IOMMU_GROUP_PATH | sed -n 's|.*/iommu_groups/\([0-9]\+\)/.*|
 echo "Port Name: $PORT"
 echo "PCI Address: $PCI_ADDR"
 echo "IOMMU Group: $IOMMU_GROUP"
-lspci -s "$PCI_ADDR" -vvv
+lspci -s "$PCI_ADDR" -v
 
 exit 0
