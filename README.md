@@ -38,6 +38,8 @@ JCNR_MTU="9000"                         # MTU for all physical interfaces( all V
 JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
 JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
 JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+JCNR_VROUTER_RESOURCE_MEMORY="default"  # Set the maximum memory limit & the initial memory request - e.g., "default", "6Gi"
+                                        # Keep the default value; this is only for low-memory server cases
 ```
 
 ## Installation
@@ -72,6 +74,9 @@ JCNR_MTU="9000"                         # MTU for all physical interfaces( all V
 JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
 JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
 JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+JCNR_VROUTER_RESOURCE_MEMORY="default"  # Set the maximum memory limit & the initial memory request - e.g., "default", "6Gi"
+                                        # Keep the default value; this is only for low-memory server cases
+
 ```
 
 4. Move to the repository directory and execute the setup script with root permissions:
@@ -188,6 +193,9 @@ JCNR_MTU="9000"                         # MTU for all physical interfaces( all V
 JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
 JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
 JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+JCNR_VROUTER_RESOURCE_MEMORY="default"  # Set the maximum memory limit & the initial memory request - e.g., "default", "6Gi"
+                                        # Keep the default value; this is only for low-memory server cases
+
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$ vi settings
@@ -209,6 +217,9 @@ JCNR_MTU="9000"                         # MTU for all physical interfaces( all V
 JCNR_CPU_CORE_MASK="2,3,22,23"          # Vrouter fwd core mask. Comma-separated list.
 JCNR_VROUTER_DPDK_UIO_DRIVER="vfio-pci" # uio driver will be "vfio-pci" or "uio_pci_generic"
 JCNR_RESTORE_INTERFACES="true"          # Restore the interface original state. "true" or "false"
+JCNR_VROUTER_RESOURCE_MEMORY="default"  # Set the maximum memory limit & the initial memory request - e.g., "default", "6Gi"
+                                        # Keep the default value; this is only for low-memory server cases
+
 
 ~/jcnr-in-server/ubuntu$
 ~/jcnr-in-server/ubuntu$ ./setup.sh
