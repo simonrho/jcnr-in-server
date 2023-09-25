@@ -164,6 +164,31 @@ sed -i "s/^\(\s*restoreInterfaces:\s*\).*$/\1$JCNR_RESTORE_INTERFACES/" $VALUES_
 sed -i "s/^\(\s*cpu_core_mask:\s*\).*$/\1\"$JCNR_CPU_CORE_MASK\"/" $VALUES_FILE
 sed -i "s/^\(\s*vrouter_dpdk_uio_driver:\s*\).*$/\1\"$JCNR_VROUTER_DPDK_UIO_DRIVER\"/" $VALUES_FILE
 
+# Check if the file already contains the contrail_vrouter_agent_dpdk section
+if grep -q "contrail_vrouter_agent_dpdk:" "$VALUES_FILE"; then
+  echo -e "The ${RED}contrail_vrouter_agent_dpdk${NC} section already exists in the file."
+else
+  if [ "${JCNR_VROUTER_RESOURCE_MEMORY}" != "default" ]; then
+    # Append the contrail_vrouter_agent_dpdk section with resources to the end of the file
+    cat <<EOL >> "$VALUES_FILE"
+
+  # --- Begin script added configuration ---
+  # Set the maximum memory limit & the initial memory request
+  contrail_vrouter_agent_dpdk:
+    resources:
+      limits:
+        memory: ${JCNR_VROUTER_RESOURCE_MEMORY}
+      requests:
+        memory: ${JCNR_VROUTER_RESOURCE_MEMORY}
+  # --- End script added configuration ---
+
+EOL
+    echo "Added the ${GREEN}contrail_vrouter_agent_dpdk${NC} section to the file."
+  else
+    echo "JCNR_VROUTER_RESOURCE_MEMORY is set to 'default'. Section not added to the file."
+  fi
+fi
+
 # Summary of changes
 echo -e "Updates made to ${GREEN}$VALUES_FILE${NC}:"
 echo -e " 1. Added ${GREEN}nodeAffinity${NC} with key-value pair: ${GREEN}$KEY=$VALUE${NC}."
@@ -172,6 +197,7 @@ echo -e " 3. Updated ${GREEN}mtu${NC} to ${GREEN}${JCNR_MTU}${NC}."
 echo -e " 4. Updated ${GREEN}restoreInterfaces${NC} to ${GREEN}$JCNR_RESTORE_INTERFACES${NC}."
 echo -e " 5. Updated ${GREEN}cpu_core_mask${NC} to ${GREEN}$JCNR_CPU_CORE_MASK${NC}."
 echo -e " 6. Updated ${GREEN}vrouter_dpdk_uio_driver${NC} to ${GREEN}$JCNR_VROUTER_DPDK_UIO_DRIVER${NC}."
+echo -e " 7. Updated ${GREEN}contrail_vrouter_agent_dpdk${NC} memory resource to ${GREEN}$JCNR_VROUTER_RESOURCE_MEMORY${NC}."
 
 # Note
 echo ""
