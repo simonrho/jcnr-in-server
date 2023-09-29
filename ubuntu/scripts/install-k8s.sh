@@ -41,7 +41,7 @@ echo -e "Installing ${GREEN}Docker${NC}..."
 log_and_run sudo apt-get install -y apt-transport-https curl software-properties-common
 log_and_run "sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg"
 
-log_and_run sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+log_and_run 'sudo echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null'
 log_and_run sudo apt-get update -y
 log_and_run sudo apt-get install -y docker-ce
 log_and_run sudo usermod -aG docker ${USER}

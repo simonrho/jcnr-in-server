@@ -13,10 +13,10 @@ After configuring everything, a system reboot is necessary to reflect the change
 
 ## Prerequisites
 
-- Ubuntu server 22.04
+- Ubuntu server (22.04, 20.04, or 18.04)
 - Downloaded JCNR package file
 
-**Note:** Our installation scripts and steps are tailored for Ubuntu server 22.04.
+**Note:** Our installation scripts and steps are primarily tailored for Ubuntu server 22.04. However, they have also been tested on Ubuntu 20.04 and 18.04.
 
 ## Configuration File
 Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings` file. Below are the available settings:
