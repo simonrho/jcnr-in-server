@@ -3,6 +3,23 @@
 This guide assists in setting up the DPDK app running environment for the Juniper Cloud-Native Router (JCNR). This setup focuses on a standalone JCNR in a server, perfect for demonstrations. It's crucial to understand that this setup is not for production use.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Tested JCNR Versions](#tested-jcnr-versions)
+- [Configuration File](#configuration-file)
+- [Installation](#installation)
+- [Directory Structure](#directory-structure)
+- [File Descriptions](#file-descriptions)
+- [Licensing and JCNR Password](#licensing-and-jcnr-password)
+- [Loading JCNR container images](#loading-jcnr-container-images)
+- [JCNR-in-Server Setup Terminal Playback](#jcnr-in-server-setup-terminal-playback)
+- [Setup Output Sections](#setup-output-sections)
+  - [1. Preliminary Setup & System Restart](#1-preliminary-setup--system-restart)
+  - [2. Kubernetes & JCNR Installations](#2-kubernetes--jcnr-installations)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Overview
