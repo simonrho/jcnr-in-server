@@ -26,8 +26,7 @@ Our jcnr server installation has been successfully tested and is compatible with
 - JCNR 23.3 
   - File: Juniper_Cloud_Native_Router_23.3-183.tar.gz
 
-This list will be updated as more versions are validated. It's recommended to use these specified versions for optimal performance.
-
+This list will be updated as more versions are validated.
 
 
 ## Configuration File
