@@ -18,6 +18,18 @@ After configuring everything, a system reboot is necessary to reflect the change
 
 **Note:** Our installation scripts and steps are primarily tailored for Ubuntu server 22.04. However, they have also been tested on Ubuntu 20.04 and 18.04.
 
+## Tested JCNR Versions
+Our jcnr server installation has been successfully tested and is compatible with the following JCNR versions:
+
+- JCNR 23.2 
+  - File: Juniper_Cloud_Native_Router_23.2.tgz
+- JCNR 23.3 
+  - File: Juniper_Cloud_Native_Router_23.3-183.tar.gz
+
+This list will be updated as more versions are validated. It's recommended to use these specified versions for optimal performance.
+
+
+
 ## Configuration File
 Before starting the installation, you can optionally configure some of the setup parameters by updating the `settings` file. Below are the available settings:
 

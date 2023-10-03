@@ -26,7 +26,7 @@ cat /dev/null > $LOG_FILE
 echo -e "\nRunning ${YELLOW}${SCRIPT_NAME}${NC}."
 
 # Get the tar file from the argument or search for the default in the current directory
-TAR_FILE="${1:-$(ls Juniper_Cloud_Native_Router*.tgz | sort -V | tail -1)}"
+TAR_FILE="${1:-$(ls Juniper_Cloud_Native_Router*gz | sort -V | tail -1)}"
 
 # Check if the tar file exists
 if [[ ! -f "$TAR_FILE" ]]; then
